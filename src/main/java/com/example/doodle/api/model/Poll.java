@@ -1,9 +1,14 @@
 package com.example.doodle.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.annotation.Id;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Poll {
+    @Id
     public String id;
     public String adminKey;
     public Long latestChange;
@@ -16,6 +21,7 @@ public class Poll {
     public String state;
     public String locale;
     public String title;
+    public String description;
     public Initiator initiator;
     public List<Option> options = new ArrayList<Option>();
     public String optionsHash;
@@ -23,5 +29,11 @@ public class Poll {
     public List<Object> invitees = new ArrayList<Object>();
     public String device;
     public String levels;
+    public Location location;
+    public Boolean multiDay;
+    public Long columnConstraint;
+    public Boolean dateText;
+    public Boolean timeZone;
+    public Long rowConstraint;
 }
 
