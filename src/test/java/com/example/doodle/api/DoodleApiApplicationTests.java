@@ -1,6 +1,6 @@
-package com.example.doodleapi;
+package com.example.doodle.api;
 
-import com.example.doodleapi.model.Poll;
+import com.example.doodle.api.model.Poll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;

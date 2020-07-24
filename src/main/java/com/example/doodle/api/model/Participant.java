@@ -1,4 +1,4 @@
-package com.example.doodleapi.model;
+package com.example.doodle.api.model;
 
 import java.util.ArrayList;
 import java.util.List;

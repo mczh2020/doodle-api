@@ -1,4 +1,4 @@
-package com.example.doodleapi.model;
+package com.example.doodle.api.model;
 
 public class Initiator {
     public String name;

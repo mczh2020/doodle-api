@@ -1,6 +1,6 @@
-package com.example.doodleapi;
+package com.example.doodle.api;
 
-import com.example.doodleapi.model.Poll;
+import com.example.doodle.api.model.Poll;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
