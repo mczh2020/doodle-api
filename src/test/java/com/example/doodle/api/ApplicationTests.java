@@ -15,7 +15,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.util.Assert.isTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DoodleApiApplicationTests {
+class ApplicationTests {
     @LocalServerPort
     private int port;
 
