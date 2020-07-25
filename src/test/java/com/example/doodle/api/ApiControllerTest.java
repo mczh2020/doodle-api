@@ -10,9 +10,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.List;
 
+import static java.net.URLEncoder.encode;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.util.Assert.isTrue;
 
@@ -25,10 +28,10 @@ public class ApiControllerTest {
     private RepositoryHelper repositoryHelper;
 
     @Test
-    void findsPollsByUser() {
+    void findsPollsByUser() throws UnsupportedEncodingException {
         // When
         final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURIWithPort("/polls/email?query=" + "mh%2Bsample@doodle.com"),
+                createURIWithPort("/polls/email?query=" + encode("mh+sample@doodle.com","UTF-8")),
                 GET, null, new ParameterizedTypeReference<List<Poll>>() {
                 });
         // Expect
@@ -37,14 +40,15 @@ public class ApiControllerTest {
     }
 
     @Test
-    void findsPollsByTitle() {
+    void findsPollsByTitle() throws UnsupportedEncodingException {
         // When
         final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURIWithPort("/polls/title?query=title"),
+                createURIWithPort("/polls/title?query=" + encode("Qui sont les superhéros Marvel les plus oufs?","UTF-8")),
                 GET, null, new ParameterizedTypeReference<List<Poll>>() {
                 });
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
+        isTrue(response.getBody().size() == 1);
     }
 
     @Test
@@ -56,6 +60,8 @@ public class ApiControllerTest {
                 });
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
+        isTrue(response.getBody().size() == 1);
+
     }
 
     private URI createURIWithPort(String path) {
