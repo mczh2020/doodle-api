@@ -28,42 +28,43 @@ public class ApiControllerTest {
     private RepositoryHelper repositoryHelper;
 
     @Test
-    void findsPollsByUser() throws UnsupportedEncodingException {
+    void findsPollsByUser(){
         // When
-        final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURIWithPort("/polls/email?query=" + encode("mh+sample@doodle.com","UTF-8")),
-                GET, null, new ParameterizedTypeReference<List<Poll>>() {
-                });
+        final ResponseEntity<List<Poll>> response = restCall("/polls/email?query=", "mh+sample@doodle.com");
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
         isTrue(response.getBody().size() == 36);
     }
 
     @Test
-    void findsPollsByTitle() throws UnsupportedEncodingException {
+    void findsPollsByTitle() {
         // When
-        final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURIWithPort("/polls/title?query=" + encode("Qui sont les superhéros Marvel les plus oufs?","UTF-8")),
-                GET, null, new ParameterizedTypeReference<List<Poll>>() {
-                });
+        final ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", "Qui sont les superhéros Marvel les plus oufs?");
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
         isTrue(response.getBody().size() == 1);
     }
 
     @Test
-    void findsPollsByCreationDate() {
+    void findsPollsByCreationDate(){
         // When
-        final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURIWithPort("/polls/created-after?query=1485477127056"),
-                GET, null, new ParameterizedTypeReference<List<Poll>>() {
-                });
+        final ResponseEntity<List<Poll>> response = restCall("/polls/created-after?query=","1485477127056");
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
         isTrue(response.getBody().size() == 1);
 
     }
 
+    private ResponseEntity<List<Poll>> restCall(String path, String query)  {
+        try {
+            return restTemplate.exchange(
+                    createURIWithPort(path + encode(query, "UTF-8")),
+                    GET, null, new ParameterizedTypeReference<List<Poll>>() {
+                    });
+        }catch (UnsupportedEncodingException e){
+            throw new RuntimeException(e);
+        }
+    }
     private URI createURIWithPort(String path) {
         return URI.create("http://localhost:" + port + path);
     }
