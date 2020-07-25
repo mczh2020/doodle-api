@@ -10,6 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
@@ -27,7 +28,7 @@ public class ApiControllerTest {
     void findsPollsByUser() {
         // When
         final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURLWithPort("/polls/email?query=" + "mh+sample@doodle.com"),
+                createURIWithPort("/polls/email?query=" + "mh%2Bsample@doodle.com"),
                 GET, null, new ParameterizedTypeReference<List<Poll>>() {
                 });
         // Expect
@@ -39,7 +40,7 @@ public class ApiControllerTest {
     void findsPollsByTitle() {
         // When
         final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURLWithPort("/polls/title?query=title"),
+                createURIWithPort("/polls/title?query=title"),
                 GET, null, new ParameterizedTypeReference<List<Poll>>() {
                 });
         // Expect
@@ -50,14 +51,14 @@ public class ApiControllerTest {
     void findsPollsByCreationDate() {
         // When
         final ResponseEntity<List<Poll>> response = restTemplate.exchange(
-                createURLWithPort("/polls/created-after?query=1485477127056"),
+                createURIWithPort("/polls/created-after?query=1485477127056"),
                 GET, null, new ParameterizedTypeReference<List<Poll>>() {
                 });
         // Expect
         isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
+    private URI createURIWithPort(String path) {
+        return URI.create("http://localhost:" + port + path);
     }
 }
