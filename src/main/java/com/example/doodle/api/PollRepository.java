@@ -13,7 +13,7 @@ public interface PollRepository extends MongoRepository<Poll, String> {
     @Query(value = "{'title' : ?0}")
     List<Poll> findByTitle(String title);
 
-    @Query(value = "{'initiated' > ?0}")
+    @Query(value = "{'initiated': {$gt: ?0} }")
     List<Poll> findAllCreatedAfter(Long dateInEpoch);
 
 }

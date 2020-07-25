@@ -29,5 +29,4 @@ public class PollRepositoryTest {
         isTrue(pollRepository.findAllCreatedAfter(1485477127056L).size() == 1,
                 "There should only be one poll that is later than the requested date");
     }
-
 }
