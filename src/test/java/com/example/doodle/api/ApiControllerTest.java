@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.net.URLEncoder.encode;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.util.Assert.isTrue;
@@ -30,19 +31,25 @@ public class ApiControllerTest {
 
     @Test
     void findsPollsByUser(){
+        // Given
+        String email = "mh+sample@doodle.com";
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/email?query=", "mh+sample@doodle.com");
+        final ResponseEntity<List<Poll>> response = restCall("/polls/email?query=", email);
         // Then
-        isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
+        isTrue(response.getStatusCode() == HttpStatus.OK,
+                format( "Return code must be 200 OK, when querying for user email:%s",email));
         isTrue(response.getBody().size() == 36);
     }
 
     @Test
     void findsPollsByTitle() {
+        // Given
+        String title = "Qui sont les superhéros Marvel les plus oufs?";
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", "Qui sont les superhéros Marvel les plus oufs?");
+        final ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", title);
         // Then
-        isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
+        isTrue(response.getStatusCode() == HttpStatus.OK,
+                format( "Return code must be 200 OK, when querying for title:%s",title));
         isTrue(response.getBody().size() == 1);
     }
 
@@ -55,19 +62,28 @@ public class ApiControllerTest {
         // When
         for (String title:titles) {
             ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", title);
-            isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
-            isTrue(response.getBody().size() == 1,String.format("For title:'%s', there should be exactly 1 match.",title));
-            isTrue(response.getBody().get(0).title.contentEquals(title),String.format("For title:'%s', what's returned from server should match exact.",title));
+            isTrue(response.getStatusCode() == HttpStatus.OK,
+                    "Return code must be 200 OK, when doing a get");
+            isTrue(response.getBody().size() == 1,
+                    format("For title:'%s', there should be exactly 1 match.",title));
+            isTrue(response.getBody().get(0).title.contentEquals(title),
+                    format("For title:'%s', what's returned from server should match exact.",title));
         }
     }
 
     @Test
     void findsPollsByCreationDate(){
+        // Given
+        // Found the epoch date to test with via "grep -oP 'initiated": \K([0-9]*)' polls.json | sort | tail -n2 | head -n1"
+        String dateEpoch = "1485477127056";
+
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/created-after?query=","1485477127056");
+        final ResponseEntity<List<Poll>> response = restCall("/polls/created-after?query=",dateEpoch);
         // Then
-        isTrue(response.getStatusCode() == HttpStatus.OK, "Return code must be 200 OK, when doing a get");
-        isTrue(response.getBody().size() == 1);
+        isTrue(response.getStatusCode() == HttpStatus.OK,
+                format( "Return code must be 200 OK, when querying for creation date:%s",dateEpoch));
+        isTrue(response.getBody().size() == 1,
+                format("For date:'%s', there should be exactly 1 match.",dateEpoch));
     }
 
     private ResponseEntity<List<Poll>> restCall(String path, String query)  {
