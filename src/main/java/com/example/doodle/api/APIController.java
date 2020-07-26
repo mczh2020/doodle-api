@@ -2,12 +2,16 @@ package com.example.doodle.api;
 
 import com.example.doodle.api.model.Poll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/v1")
@@ -20,20 +24,27 @@ public class APIController {
     }
 
     //1. List all polls created by a user
-    @GetMapping("/polls/email")
-    public List<Poll> findPollsByUser(@RequestParam("query") String email){
-        return repository.findByInitiatorEmail(email);
+    @GetMapping("/polls")
+    public ResponseEntity<List<Poll>> findPolls(@RequestParam(value = "email", required = false) String email,
+                                                @RequestParam(value = "title", required = false) String title,
+                                                @RequestParam(value = "created-after", required = false, defaultValue = "0") Long dateInEpoch) {
+        if (isBlank(email) && isBlank(title) && dateInEpoch == 0) {
+            return ResponseEntity.status(UNPROCESSABLE_ENTITY).body(null);
+        }
+        if (!isBlank(email)) {
+            return ResponseEntity.status(OK).body(repository.findByInitiatorEmail(email));
+        }
+
+        if (!isBlank(title)) {
+            return ResponseEntity.status(OK).body(repository.findByTitle(title));
+        }
+
+        if (dateInEpoch != 0) {
+            return ResponseEntity.status(OK).body(repository.findAllCreatedAfter(dateInEpoch));
+        }
+
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(null);
     }
 
-    //2. Search polls by its title
-    @GetMapping("/polls/title")
-    public List<Poll> findPollsByTitle(@RequestParam("query") String title){
-        return repository.findByTitle(title);
-    }
 
-    //3. List all polls created after a certain date
-    @GetMapping("/polls/created-after")
-    public List<Poll> findPollsByCreationDate(@RequestParam("query") Long dateInEpoch) {
-        return repository.findAllCreatedAfter(dateInEpoch);
-    }
 }

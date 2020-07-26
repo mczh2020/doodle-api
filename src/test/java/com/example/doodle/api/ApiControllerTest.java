@@ -31,14 +31,23 @@ public class ApiControllerTest {
     private RepositoryHelper repositoryHelper;
 
     @Test
-    void findsPollsByUser(){
+    void whenNoParameterIsProvidedByClientErrorCaseIsHandled() {
+        // When
+        final ResponseEntity<List<Poll>> response = restCall("/polls", "");
+        // Then
+        isTrue(response.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY,
+                "Return code must be 422 when no query parameter is provided.");
+    }
+
+    @Test
+    void findsPollsByUser() {
         // Given
         String email = "mh+sample@doodle.com";
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/email?query=", email);
+        final ResponseEntity<List<Poll>> response = restCall("/polls?email=", email);
         // Then
         isTrue(response.getStatusCode() == HttpStatus.OK,
-                format( "Return code must be 200 OK, when querying for user email:%s",email));
+                format("Return code must be 200 OK, when querying for user email:%s", email));
         isTrue(response.getBody().size() == 36);
     }
 
@@ -47,7 +56,7 @@ public class ApiControllerTest {
         // Given
         String title = "Qui sont les superhéros Marvel les plus oufs?";
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", title);
+        final ResponseEntity<List<Poll>> response = restCall("/polls?title=", title);
         // Then
         isTrue(response.getStatusCode() == HttpStatus.OK,
                 format( "Return code must be 200 OK, when querying for title:%s",title));
@@ -62,7 +71,7 @@ public class ApiControllerTest {
                                             "谁是最坏蛋奇迹超级英雄？");
         // When
         for (String title:titles) {
-            ResponseEntity<List<Poll>> response = restCall("/polls/title?query=", title);
+            ResponseEntity<List<Poll>> response = restCall("/polls?title=", title);
             isTrue(response.getStatusCode() == HttpStatus.OK,
                     "Return code must be 200 OK, when doing a get");
             isTrue(response.getBody().size() == 1,
@@ -79,7 +88,7 @@ public class ApiControllerTest {
         String dateEpoch = "1485477127056";
 
         // When
-        final ResponseEntity<List<Poll>> response = restCall("/polls/created-after?query=",dateEpoch);
+        final ResponseEntity<List<Poll>> response = restCall("/polls?created-after=", dateEpoch);
         // Then
         isTrue(response.getStatusCode() == HttpStatus.OK,
                 format( "Return code must be 200 OK, when querying for creation date:%s",dateEpoch));
