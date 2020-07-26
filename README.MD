@@ -1,7 +1,7 @@
-#Doodle Backend/API
+# Doodle Backend/API
 
 
-##TDLR
+## TDLR
 Run the following to create a container image from code and start the container as well as a MongoDB instance.
 
 ```bash
