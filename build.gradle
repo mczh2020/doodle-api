@@ -2,11 +2,12 @@ plugins {
 	id 'org.springframework.boot' version '2.3.1.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'com.google.cloud.tools.jib' version '2.4.0'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '14'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -23,4 +24,11 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+jib{
+	to {
+		image = 'doodle-api'
+		tags = ['latest']
+	}
 }
