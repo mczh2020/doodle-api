@@ -9,10 +9,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +22,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.util.Assert.isTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class ApiControllerTest {
     private final TestRestTemplate restTemplate = new TestRestTemplate();
     @LocalServerPort
@@ -86,17 +87,13 @@ public class ApiControllerTest {
                 format("For date:'%s', there should be exactly 1 match.",dateEpoch));
     }
 
-    private ResponseEntity<List<Poll>> restCall(String path, String query)  {
-        try {
-            return restTemplate.exchange(
-                    createURIWithPort(path + encode(query, "UTF-8")),
-                    GET, null, new ParameterizedTypeReference<List<Poll>>() {
-                    });
-        }catch (UnsupportedEncodingException e){
-            throw new RuntimeException(e);
-        }
+    private ResponseEntity<List<Poll>> restCall(String path, String query) {
+        return restTemplate.exchange(
+                createURIWithPort(path + encode(query, StandardCharsets.UTF_8)),
+                GET, null, new ParameterizedTypeReference<List<Poll>>() {
+                });
     }
     private URI createURIWithPort(String path) {
-        return URI.create("http://localhost:" + port + path);
+        return URI.create("http://localhost:" + port + "/api/v1" + path);
     }
 }
