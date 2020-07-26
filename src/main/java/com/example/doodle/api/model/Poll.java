@@ -2,6 +2,7 @@ package com.example.doodle.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Poll {
     public String id;
     public String adminKey;
     public Long latestChange;
+    @Indexed
     public Long initiated;
     public Long participantsCount;
     public Long inviteesCount;
@@ -20,6 +22,7 @@ public class Poll {
     public String preferencesType;
     public String state;
     public String locale;
+    @Indexed
     public String title;
     public String description;
     public Initiator initiator;
